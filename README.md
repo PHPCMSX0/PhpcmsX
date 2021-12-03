@@ -1,7 +1,7 @@
 ![](https://code.phpcmsx.com/img/PHPCMSX-git-1.png)
 
 ## **PhpcmsX (Phpcms V9 Fans维护版)**
-#### v2.6.9 Beta 20210915
+#### v2.6.9 Beta 20211203
 #### www.phpcmsx.com
 
     <?php
