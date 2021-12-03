@@ -1,0 +1,19 @@
+##如在nginx下使用伪静态，使用以下规则
+
+location / {
+  ##PHPCMSX内置伪静态默认规则
+  rewrite 'index.html' index.php last;
+  rewrite ^/content-([0-9]+)-([0-9]+)-([0-9]+).html /index.php?m=content&c=index&a=show&catid=$1&id=$2&page=$3;
+  rewrite ^/show-([0-9]+)-([0-9]+)-([0-9]+).html /index.php?m=content&c=index&a=show&catid=$1&id=$2&page=$3;
+  rewrite ^/list-([0-9]+)-([0-9]+).html /index.php?m=content&c=index&a=lists&catid=$1&page=$2;
+  rewrite ^/tag-([^\.]*)-([0-9]+)-([0-9]+).html /index.php?m=content&c=tag&catid=$2&tag=$1&page=$3 last;
+  rewrite ^/comment-([0-9]+)-([0-9]+)-([0-9]+).html /index.php?m=comment&c=index&a=init&commentid=content_$1-$2-$3 last;
+  
+  ##QQ登录回调可启用下条规则
+  #rewrite ^/qqcode /index.php?m=member&c=index&a=public_qq_loginnew&code=$bref_1 last;
+  ##目录英文名伪静态可启用以下规则
+  ##栏目英文目录名.html   后台 扩展 - 自定义URL 规则中设置category规则 {$catdir}.html|{$catdir}-{$page}.html
+  #rewrite ^/((\w+)(\-(\d+))?)\.html /index.php?m=content&c=index&a=lists&catdir=$2&page=$4 last;
+  ##栏目英文目录名/文章id.html  后台 扩展 - 自定义URL 规则中设置show规则 {$catdir}/{$id}.html|{$catdir}/{$id}-{$page}.html 
+  #rewrite ^/(\w+)/(\d+)(\-(\d+))?\.html /index.php?m=content&c=index&a=show&catdir=$1&id=$2&page=$4 last;  
+}

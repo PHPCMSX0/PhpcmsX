@@ -1,0 +1,177 @@
+{template 'member', 'header'}
+<div id="memberArea">
+	{template 'member', 'account_manage_left'}
+	<div class="col-auto">
+		<div class="col-1 ">
+			<h5 class="title">{L('modify').L('avatar')}</h5>
+			<div class="content">
+				<link href="{CSS_PATH}table_form.css" rel="stylesheet" type="text/css" />
+				<link href="{CSS_PATH}cropper.min.css" rel="stylesheet" type="text/css" />
+				<link href="{CSS_PATH}ImgCropping.css" rel="stylesheet" type="text/css" />
+				<script src="{JS_PATH}cropper.min.js"></script>
+				<div style="width: 320px;height: 320px;border: solid 1px #e2e2e2;padding: 5px;margin-top: 10px">
+					{loop $avatar $k $v}
+					{if $k == 180}
+					<img src="{$v}" alt="{$v}" id="finalImg"  width="100%" onerror="this.src='{$phpsso_api_url}/statics/images/member/nophoto.gif'">
+					{/if}
+					{/loop}
+				</div>
+				<button id="replaceImg" class="l-btn">点击上传图片</button>
+			</div>
+			<span class="o1"></span><span class="o2"></span><span class="o3"></span><span class="o4"></span>
+		</div>
+	</div>
+</div>
+<!--图片裁剪框 start-->
+<div style="display: none" class="tailoring-container">
+	<div class="black-cloth" onclick="closeTailor(this)"></div>
+	<div class="tailoring-content">
+		<div class="tailoring-content-one">
+			<label title="上传图片" for="chooseImg" class="l-btn choose-btn">
+				<input type="file" accept="image/*" name="file" id="chooseImg" class="hidden" onchange="selectImg(this)">
+				选择图片
+			</label>
+			<div class="close-tailoring"  onclick="closeTailor(this)">×</div>
+		</div>
+		<div class="tailoring-content-two">
+			<div class="tailoring-box-parcel">
+				{if $avatar}
+				{loop $avatar $k $v}
+				{if $k == 180}
+				<img src="{$v}" alt="{$v}" id="tailoringImg"  width="100%">
+				{/if}
+				{/loop}
+				{/if}
+			</div>
+			<div class="preview-box-parcel">
+				<p>图片预览：</p>
+				<div class="previewImg-box">
+					<div class="circular previewImg slg"></div>
+					<p>180*180</p>
+				</div>
+				<div class="previewImg-box">
+					<div class="circular previewImg lg"></div>
+					<p>90*90</p>
+				</div>
+				<div class="previewImg-box">
+					<div class="circular previewImg md"></div>
+					<p>45*45</p>
+				</div>
+				<div class="previewImg-box">
+					<div class="circular previewImg sm"></div>
+					<p>30*30</p>
+				</div>
+			</div>
+		</div>
+		<div class="tailoring-content-three">
+			<button class="l-btn cropper-reset-btn">复位</button>
+			<button class="l-btn cropper-rotate-btn">旋转</button>
+			<button class="l-btn cropper-scaleX-btn">换向</button>
+			<button class="l-btn sureCut" id="sureCut">保存修改</button>
+		</div>
+	</div>
+</div>
+<script>
+	(window.onresize = function () {
+		var win_height = $(window).height();
+		var win_width = $(window).width();
+		if (win_width <= 768){
+			$(".tailoring-content").css({
+				"top": (win_height - $(".tailoring-content").outerHeight())/2,
+				"left": 0
+			});
+		}else{
+			$(".tailoring-content").css({
+				"top": (win_height - $(".tailoring-content").outerHeight())/2,
+				"left": (win_width - $(".tailoring-content").outerWidth())/2
+			});
+		}
+	})();
+	$("#replaceImg,#finalImg").on("click",function () {
+		$(".tailoring-container").toggle();
+	});
+	function selectImg(file) {
+		if (!file.files || !file.files[0]){
+			return;
+		}
+		var reader = new FileReader();
+		reader.onload = function (evt) {
+			var replaceSrc = evt.target.result;
+			$('#tailoringImg').cropper('replace', replaceSrc,false);//默认false，适应高度，不失真
+		}
+		reader.readAsDataURL(file.files[0]);
+	}
+	$('#tailoringImg').cropper({
+		aspectRatio: 1/1,//默认比例
+		preview: '.previewImg',//预览视图
+		guides: true,  //裁剪框的虚线(九宫格)
+		autoCropArea: 0.9,  //0-1之间的数值，定义自动剪裁区域的大小，默认0.8
+		movable: false, //是否允许移动图片
+		dragCrop: true,  //是否允许移除当前的剪裁框，并通过拖动来新建一个剪裁框区域
+		movable: true,  //是否允许移动剪裁框
+		resizable: true,  //是否允许改变裁剪框的大小
+		zoomable: true,  //是否允许缩放图片大小
+		mouseWheelZoom: false,  //是否允许通过鼠标滚轮来缩放图片
+		touchDragZoom: true,  //是否允许通过触摸移动来缩放图片
+		rotatable: true,  //是否允许旋转图片
+		crop: function(e) {
+		}
+	});
+	//旋转
+	$(".cropper-rotate-btn").on("click",function () {
+		$('#tailoringImg').cropper("rotate", 45);
+	});
+	//复位
+	$(".cropper-reset-btn").on("click",function () {
+		$('#tailoringImg').cropper("reset");
+	});
+	//换向
+	var flagX = true;
+	$(".cropper-scaleX-btn").on("click",function () {
+		if(flagX){
+			$('#tailoringImg').cropper("scaleX", -1);
+			flagX = false;
+		}else{
+			$('#tailoringImg').cropper("scaleX", 1);
+			flagX = true;
+		}
+		flagX != flagX;
+	});
+
+	//裁剪后的处理
+	$("#sureCut").on("click",function () {
+		if ($("#tailoringImg").attr("src") == null ){
+			return false;
+		}else{
+			var cas = $('#tailoringImg').cropper('getCroppedCanvas', {
+				width: 750,
+				height: 750,
+			});//获取被裁剪后的canvas
+			var base64url =  cas.toDataURL('image/jpeg', 0.8);
+			$("#finalImg").prop("src",base64url);//显示为图片的形式
+			imagesAjax(base64url);
+			closeTailor();
+		}
+	});
+	//关闭裁剪框
+	function closeTailor() {
+		$(".tailoring-container").toggle();
+	}
+	function imagesAjax(src) {
+		var data = {};
+		data.avatardata = src;
+		data.uid = "{$uid}";
+		$.ajax({
+			url: "{$upurl}",
+			data: data,
+			type: "POST",
+			dataType: 'json',
+			success: function(res) {
+
+			}
+		});
+	}
+
+</script>
+<div class="clear"></div>
+{template 'member', 'footer'}

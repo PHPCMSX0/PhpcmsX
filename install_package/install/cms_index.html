@@ -1,0 +1,50 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>PHPCMS X</title>
+    <meta baidu-gxt-verify-token="11a8a7ed7157eaf87790a45c523a9db4">
+    <meta name="keywords" content="phpcmsx,phpcms">
+    <meta name="description" content="PHPCMS X是基于PHPCMS V9优化完善升级而来，对PHPCMS V9进行了全面的优化和持续的安全修复及维护，并对部分功能做了延伸，PHPCMSX是PHPCMS的fans维护版。">
+    <link rel="shortcut icon" href="favicon.ico">
+    <style>
+        *{margin: 0;padding: 0;}
+        body {background-color: #eee;background-image: linear-gradient(60deg, rgba(84,58,183,1) 0%, rgba(0,172,193,1) 100%);}
+        article{width: 800px;height: auto;overflow: hidden}
+        h1 {text-align: center;line-height: 70px;color: #fff;font-size: 30px;border-bottom: #ccc 1px dotted}
+        h1 i{color:#5FB878;font-style: normal;}
+        article p {margin-top:40px;line-height: 30px;color:#eee;text-align: center}
+        a:link,a:visited {color: #eee;text-decoration: none;}
+        a:hover {color: #fff}
+    </style>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<article>
+    <h1>欢迎使用 PHPCMS <i>X</i></h1>
+    <p>
+        使用问题和交流请加入PHPCMS X交流群 <a href="https://shang.qq.com/wpa/qunwpa?idkey=9a6c9fa44295ad063c9e0f73deb39b25d878ba3dfb07d2039b3fbd75dc482eba" target="_blank"> 601033253 </a><br>
+        或点击这里<a href="https://www.phpcmsx.com" title="PHPCMS X" target="_blank">前去 PHPCMS X资料站查阅丰富的使用资料 www.PHPCMSX.com</a>
+    </p>
+</article>
+<script>
+    function mCenter(){
+        var iWidth=$('article').width();
+        var iHeight=$('article').height();
+        var iTop = (document.documentElement.clientHeight-iHeight)/2;
+        var iLeft = (document.documentElement.clientWidth-iWidth)/2; //获得窗口的水平位置;
+        $("article").height(iHeight)
+            .width(iWidth)
+            .css('position','absolute')
+            .css("left",iLeft)
+            .css("top",iTop)
+            .css("display","block");
+    };
+    $(document).ready(function () {
+        mCenter();
+    });
+    $(window).resize(function () {
+        mCenter();
+    });
+</script>
+</body>
+</html>

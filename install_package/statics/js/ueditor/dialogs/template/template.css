@@ -1,0 +1,71 @@
+::-webkit-scrollbar {
+	width: 12px;
+	height: 12px;
+	-webkit-border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+	-webkit-border-radius: 10px;
+    -webkit-box-shadow: inset 0px 0px 8px rgba(0,0,0,0.2);
+	background-color: rgba(0, 0, 0, 0.05);
+	width: 3px;
+	height: 3px;
+	border:1px solid rgba(255,255,255,0.05);
+}
+::-webkit-scrollbar-track-piece{
+	-webkit-border-radius: 10px;
+	background-color: rgba(234, 234, 234, 1);
+    -webkit-box-shadow: inset 0px 0px 6px rgba(0,0,0,0.15);
+	width: 3px;
+	height: 3px;
+}
+::-webkit-scrollbar-thumb {
+	-webkit-border-radius: 10px;
+	background-color: rgba(244, 244, 244, 1);
+	-webkit-box-shadow: inset 1px 1px 15px rgba(255,255,255,0.8),
+	inset 1px 1px 0px rgba(255,255,255,0.8)
+	;
+	border:1px solid rgba(0,0,0,0.1);
+}
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active
+ {
+	background-color: rgba(204, 204, 204, 1);
+	-webkit-box-shadow: none;
+	border:1px solid rgba(0,0,0,0.1);
+}
+
+::-webkit-scrollbar-track:window-inactive,
+::-webkit-scrollbar-track-piece:window-inactive,
+::-webkit-scrollbar-thumb:window-inactive {
+	-webkit-box-shadow:none;
+}
+::-webkit-scrollbar-button {
+	width: 0;
+	height: 0;
+	display: none;
+}
+::-webkit-scrollbar-corner {
+	background-color: transparent;
+}
+::-webkit-resizer{
+	background-color: transparent;
+}
+.wrap{ padding: 5px;font-size: 14px;}
+.left{width:425px;float: left;}
+.right{width:160px;border: 1px solid #ccc;float: right;padding: 5px;margin-right: 5px;}
+.right .pre{height: 332px;overflow-y: auto;}
+.right .preitem{border: white 1px solid;margin: 5px 0;padding: 2px 0;}
+.right .preitem:hover{background-color: lemonChiffon;cursor: pointer;border: #ccc 1px solid;}
+.right .preitem img{display: block;margin: 0 auto;width:100px;}
+.clear{clear: both;}
+.top{height:26px;line-height: 26px;padding: 5px;}
+.bottom{height:320px;width:100%;margin: 0 auto;}
+.transparent{ background: url("images/bg.gif") repeat;}
+.bottom table tr td{border:1px dashed #ccc;}
+#colorPicker{width: 17px;height: 17px;border: 1px solid #CCC;display: inline-block;border-radius: 3px;box-shadow: 2px 2px 5px #D3D6DA;}
+.border_style1{padding:2px;border: 1px solid #ccc;border-radius: 5px;box-shadow:2px 2px 5px #d3d6da;}
+p{margin: 5px 0}
+table{clear:both;margin-bottom:10px;border-collapse:collapse;word-break:break-all;}
+li{clear:both}
+ol{padding-left:40px; }
