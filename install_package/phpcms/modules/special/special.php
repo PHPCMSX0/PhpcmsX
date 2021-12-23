@@ -474,6 +474,7 @@ class special extends admin {
 	 * @param string $a add/edit添加操作时，自动加上默认值
 	 */
 	private function check($data, $a = 'add') {
+      	$data = new_html_special_chars(remove_xss($data));
 		if(!$data['title']) showmessage(L('title_cannot_empty'), HTTP_REFERER);
 		if(!$data['banner']) showmessage(L('banner_no_empty'), HTTP_REFERER);
 		if(!$data['thumb']) showmessage(L('thumb_no_empty'), HTTP_REFERER);
