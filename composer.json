@@ -1,0 +1,19 @@
+{
+  "name": "phpcmsx/phpcmsx",
+  "description": "PhpcmsX Continuous upgrade maintenance version(PhpcmsV9升级优化版-后台一键升级/持续维护中)",
+  "keywords": ["phpcmsx","phpcmsv9","phpcms","cms","php","php7","mysql"],
+  "type": "project",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "ArtRogue",
+      "email": "artrogue@vip.qq.com",
+      "homepage": "https://www.phpcmsx.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0"
+  }
+}
