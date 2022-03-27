@@ -1,4 +1,9 @@
 <?php
+/**
+ * www.PHPCMSX.com
+ * Last updated on 2021/08/05
+ * From https://code.phpcmsx.com/artrogue/PhpcmsX
+ */
 defined('IN_PHPCMS') or exit('No permission resources.');
 header('Access-Control-Allow-Origin:*');
 header('Access-Control-Allow-Headers: X-Requested-With,X_Requested_With');
@@ -139,13 +144,13 @@ if ($userid) {
             break;
         /* 上传图片 */
         case 'uploadimage':
-        /* 上传涂鸦 */
+            /* 上传涂鸦 */
         case 'uploadscrawl':
-        /* 上传视频 */
+            /* 上传视频 */
         case 'uploadvideo':
-        /* 上传文件 */
+            /* 上传文件 */
         case 'uploadfile':
-        /* 上传截图 */
+            /* 上传截图 */
         case 'uploadscreen':
             $result = include("ueditor/action_upload.php");
             break;

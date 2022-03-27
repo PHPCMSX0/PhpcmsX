@@ -424,7 +424,7 @@ class Uploader
     }
 
     /**
-     * 获取文件上传后的路径
+     * 获取文件上传后的路径 PHPCMSX
      * @param $fullname
      * @return string
      */

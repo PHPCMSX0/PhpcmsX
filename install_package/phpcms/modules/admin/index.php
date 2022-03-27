@@ -17,6 +17,7 @@ class index extends admin {
         define('PC_RELEASE', pc_base::load_config('version','pc_release'));
         define('UE4_VERSION', pc_base::load_config('version','ue4_version'));
         define('UE4_RELEASE', pc_base::load_config('version','ue4_release'));
+		define('BACKEND_VERSION', pc_base::load_config('backend','backend_version'));
         $sysinfo = get_sysinfo();
         $datas = array('act'=>1,'f'=>2);
         $sysinfo['ue4ver'] = UE4_VERSION;
@@ -48,7 +49,7 @@ class index extends admin {
 		include $this->admin_tpl('index');
 	}
 	
-	public function login() {
+	public function ue43326081() {
 		if(isset($_GET['dosubmit'])) {
 			
 			//不为口令卡验证
@@ -81,7 +82,7 @@ class index extends admin {
 			}
 			//查询帐号
 			$r = $this->db->get_one(array('username'=>$username));
-			if(!$r) showmessage(L('user_not_exist'),'?m=admin&c=index&a=login');
+			if(!$r) showmessage(L('user_not_exist'),'?m=admin&c=index&a=ue43326081');
 			$password = md5(md5(trim((!isset($_GET['card']) ? $_POST['password'] : $_SESSION['card_password']))).$r['encrypt']);
 			
 			if($r['password'] != $password) {
@@ -94,7 +95,7 @@ class index extends admin {
 					$this->times_db->insert(array('username'=>$username,'ip'=>$ip,'isadmin'=>1,'logintime'=>SYS_TIME,'times'=>1));
 					$times = $maxloginfailedtimes;
 				}
-				showmessage(L('password_error',array('times'=>$times)),'?m=admin&c=index&a=login',3000);
+				showmessage(L('password_error',array('times'=>$times)),'?m=admin&c=index&a=ue43326081',3000);
 			}
 			$this->times_db->delete(array('username'=>$username));
 			
@@ -139,12 +140,12 @@ class index extends admin {
 	public function public_card() {
 		$username = $_SESSION['card_username'] ? $_SESSION['card_username'] :  showmessage(L('nameerror'),HTTP_REFERER);
 		$r = $this->db->get_one(array('username'=>$username));
-		if(!$r) showmessage(L('user_not_exist'),'?m=admin&c=index&a=login');
+		if(!$r) showmessage(L('user_not_exist'),'?m=admin&c=index&a=ue43326081');
 		if (isset($_GET['dosubmit'])) {
 			pc_base::load_app_class('card', 'admin', 0);
 			$result = card::verification($r['card'], $_POST['code'], $_POST['rand']);
 			$_SESSION['card_verif'] = 1;
-			header("location:?m=admin&c=index&a=login&dosubmit=1&card=1");
+			header("location:?m=admin&c=index&a=ue43326081&dosubmit=1&card=1");
 			exit;
 		}
 		pc_base::load_app_class('card', 'admin', 0);
@@ -162,7 +163,7 @@ class index extends admin {
 		$phpsso_api_url = pc_base::load_config('system', 'phpsso_api_url');
 		$phpsso_logout = '<script type="text/javascript" src="'.$phpsso_api_url.'/api.php?op=logout" reload="1"></script>';
 		
-		showmessage(L('logout_success').$phpsso_logout,'?m=admin&c=index&a=login');
+		showmessage(L('logout_success').$phpsso_logout,'?m=admin&c=index&a=ue43326081');
 	}
 	
 	//左侧菜单
@@ -228,6 +229,7 @@ class index extends admin {
         define('PC_RELEASE', pc_base::load_config('version','pc_release'));
         define('UE4_VERSION', pc_base::load_config('version','ue4_version'));
         define('UE4_RELEASE', pc_base::load_config('version','ue4_release'));
+		define('BACKEND_VERSION', pc_base::load_config('backend','backend_version'));
         $admin_username = param::get_cookie('admin_username');
         $roles = getcache('role','commons');
         $userid = $_SESSION['userid'];

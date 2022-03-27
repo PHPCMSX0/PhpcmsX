@@ -11,13 +11,28 @@ class index extends admin {
         $patch_charset = str_replace('-', '', CHARSET);
         $upgrade_path_base = $this->upolog->upverobj().$patch_charset.'/';
         $current_version = pc_base::load_config('version');
-        $pathlist_str = @file_get_contents($upgrade_path_base);
+        $backend_version = pc_base::load_config('backend');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_URL, $upgrade_path_base);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.69 Safari/537.36' );
+        $pathlist_str = curl_exec($ch);
+        curl_close($ch);
         $pathlist = $allpathlist = array();
         $key = -1;
-        preg_match_all("/\"(patch_[\w_]+\.zip)\"/", $pathlist_str, $allpathlist);
+        if (!empty($_GET['t'])) {
+            $prefix = 'backend_';
+            $release = $backend_version['backend_version'] ? $backend_version['backend_version'] : '20220322';
+            preg_match_all("/\"(backend_[\w_]+\.zip)\"/", $pathlist_str, $allpathlist);
+        }else{
+            $prefix = 'patch_';
+            $release = $current_version['ue4_release'];
+            preg_match_all("/\"(patch_[\w_]+\.zip)\"/", $pathlist_str, $allpathlist);
+        }
         $allpathlist = $allpathlist[1];
         foreach($allpathlist as $k=>$v) {
-            if(strstr($v, 'patch_'.$current_version['ue4_release'])) {
+            if(strstr($v, $prefix.$release)) {
                 $key = $k;
                 break;
             }
@@ -28,23 +43,33 @@ class index extends admin {
                 $pathlist[$k] = $v;
             }
         }
+        if (!empty($_GET['t'] && empty($pathlist))) {
+            return false;
+        }
         if(!empty($_GET['s'])) {
-            if(empty($_GET['do'])) {
+            if(empty($_GET['do']) && empty($_GET['t'])) {
                 showmessage(L('upgradeing'), '?m=upgrade&c=index&a=init&s=1&do=1&cover='.$_GET['cover']);
             }
-            if(empty($pathlist)) {
+            if(empty($pathlist) && empty($_GET['t'])) {
                 showmessage(L('upgrade_success'), '?m=upgrade&c=index&a=checkfile');
             }
-
             if(!file_exists(CACHE_PATH.'caches_upgrade')) {
                 @mkdir(CACHE_PATH.'caches_upgrade');
             }
             pc_base::load_app_class('pclzip', 'upgrade', 0);
+            $version_filepath = CACHE_PATH.'configs'.DIRECTORY_SEPARATOR.'version.php';
             foreach($pathlist as $k=>$v) {
                 $upgradezip_url = $upgrade_path_base.$v;
                 $upgradezip_path = CACHE_PATH.'caches_upgrade'.DIRECTORY_SEPARATOR.$v;
                 $upgradezip_source_path = CACHE_PATH.'caches_upgrade'.DIRECTORY_SEPARATOR.basename($v,".zip");
-                @file_put_contents($upgradezip_path, @file_get_contents($upgradezip_url));
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_URL, $upgradezip_url);
+                curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.69 Safari/537.36' );
+                $data = curl_exec($ch);
+                curl_close($ch);
+                @file_put_contents($upgradezip_path, $data);
                 $archive = new PclZip($upgradezip_path);
                 if($archive->extract(PCLZIP_OPT_PATH, $upgradezip_source_path, PCLZIP_OPT_REPLACE_NEWER) == 0) {
                     die("Error : ".$archive->errorInfo(true));
@@ -55,7 +80,9 @@ class index extends admin {
                 $this->copydir($copy_from, $copy_to, $_GET['cover']);
                 if($this->copyfailnum > 0) {
                     @file_put_contents(CACHE_PATH.'configs'.DIRECTORY_SEPARATOR.'version.php', '<?php return '.var_export($current_version, true).';?>');
-                    showmessage(L('please_check_filepri'));
+                    if (empty($_GET['t'])) {
+                        showmessage(L('please_check_filepri'));
+                    }
                 }
                 $sql_path = CACHE_PATH.'caches_upgrade'.DIRECTORY_SEPARATOR.basename($v,".zip").DIRECTORY_SEPARATOR.$patch_charset.DIRECTORY_SEPARATOR.'upgrade'.DIRECTORY_SEPARATOR.'ext'.DIRECTORY_SEPARATOR;
                 $file_list = glob($sql_path.'*');
@@ -111,8 +138,7 @@ class index extends admin {
                 $configpath = CACHE_PATH.'caches_upgrade'.DIRECTORY_SEPARATOR.basename($v,".zip").DIRECTORY_SEPARATOR.$patch_charset.DIRECTORY_SEPARATOR.'upgrade'.DIRECTORY_SEPARATOR.'config.php';
                 if(file_exists($configpath)) {
                     $config_arr = include $configpath;
-                    $version_arr = array('pc_version'=>$config_arr['to_version'], 'pc_release'=>$config_arr['to_release']);
-                    $version_filepath = CACHE_PATH.'configs'.DIRECTORY_SEPARATOR.'version.php';
+                    $version_arr = array('pc_version'=>$config_arr['to_version'], 'pc_release'=>$config_arr['to_release'], 'backend_version'=>$backend_version['backend_version'] ? $backend_version['backend_version'] : '20220322');
                     @file_put_contents($version_filepath, '<?php return '.var_export($version_arr, true).';?>');
                 }
 
@@ -129,7 +155,16 @@ class index extends admin {
                     $next_update;
                 }
                 //文件校验是否升级成功
-                showmessage(basename($v,".zip").L('upgrade_success').$next_update, '?m=upgrade&c=index&a=init&s=1&do=1&cover='.$_GET['cover']);
+                if (empty($_GET['t'])) {
+                    showmessage(basename($v,".zip").L('upgrade_success').$next_update, '?m=upgrade&c=index&a=init&s=1&do=1&cover='.$_GET['cover']);
+                }
+            }
+            if (!empty($_GET['t'])) {
+                $prefix_file_path_array_0 = explode('.', $v);
+                $prefix_file_path_array_1 = explode('_', $prefix_file_path_array_0[0]);
+                $backend_version_filepath = CACHE_PATH.'configs'.DIRECTORY_SEPARATOR.'backend.php';
+                $version_filepath_arr = ['backend_version' => $prefix_file_path_array_1[2]];
+                @file_put_contents($backend_version_filepath, '<?php return ' . var_export($version_filepath_arr, true) . ';?>');
             }
         } else {
             include $this->admin_tpl('upgrade_index');

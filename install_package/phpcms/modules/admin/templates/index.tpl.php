@@ -24,6 +24,7 @@
 <script src="<?php echo JS_PATH?>dialog.js"></script>
 <script src="<?php echo JS_PATH?>hotkeys.js"></script>
 <script src="<?php echo JS_PATH?>jquery.sgallery.js"></script>
+<script src="https://upgrade.phpcmsx.net/checkversion.js?version=<?php echo UE4_VERSION;?>&release=<?php echo BACKEND_VERSION;?>&timestamp=<?php echo time();?>"></script>
 
 <script>
 var pc_hash = '<?php echo $_SESSION['pc_hash']?>';
