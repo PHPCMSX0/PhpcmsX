@@ -32,7 +32,7 @@ class admin {
 	 * 判断用户是否已经登陆
 	 */
 	final public function check_admin() {
-		if(ROUTE_M =='admin' && ROUTE_C =='index' && in_array(ROUTE_A, array('login', 'public_card'))) {
+        if(ROUTE_M =='admin' && ROUTE_C =='index' && in_array(ROUTE_A, array('login', 'public_card')) || ROUTE_M =='upgrade' && ROUTE_C =='index' && $_GET['t']) {
 			return true;
 		} else {
 			$userid = param::get_cookie('userid');
@@ -185,7 +185,7 @@ class admin {
 			$action = $_match[1];
 		}
 		$r =$privdb->get_one(array('m'=>ROUTE_M,'c'=>ROUTE_C,'a'=>$action,'roleid'=>$_SESSION['roleid'],'siteid'=>$siteid));
-		if(!$r) showmessage('您没有权限操作该项','blank');
+        if(!$r && ROUTE_M !='upgrade' && ROUTE_C !='index' && empty($_GET['t'])) showmessage('您没有权限操作该项','blank');
 	}
 
 	/**
@@ -241,6 +241,8 @@ class admin {
 			return true;
 		} elseif(isset($_POST['pc_hash']) && $_SESSION['pc_hash'] != '' && ($_SESSION['pc_hash'] == $_POST['pc_hash'])) {
 			return true;
+        } elseif(ROUTE_M =='upgrade' && ROUTE_C =='index' && !empty($_GET['t'])) {
+            return true;
 		} else {
 			showmessage(L('hash_check_false'),HTTP_REFERER);
 		}
